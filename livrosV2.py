@@ -17,6 +17,45 @@ def cadastrar_livro(conexao):
         print("Nome invalido.")
         return
 
+    print("\nDica: Para mais de um autor, separe por vírgulas.")
+    autores = input("Nome do(s) Autor(es): ").strip()
+    if not autores: 
+        print("Autor invalido.")
+        return 
+
+    lista_autores = list(set([a.strip() for a in autores.split(',') if a.strip()]))
+
+    cursor = conexao.cursor(dictionary=True)
+    
+    cursor.execute("""
+        SELECT l.id_livro, GROUP_CONCAT(LOWER(a.nome_autor)) as autores_existentes
+        FROM tbl_livros l
+        INNER JOIN livro_autor la ON l.id_livro = la.id_livro
+        INNER JOIN tbl_autor a ON la.id_autor = a.id_autor
+        WHERE LOWER(l.titulo_livro) = LOWER(%s)
+        GROUP BY l.id_livro
+    """, (titulo,))
+    
+    livros_encontrados = cursor.fetchall()
+    
+    duplicado = False
+    for livro in livros_encontrados:
+        autores_banco = livro['autores_existentes'].split(',') if livro['autores_existentes'] else []
+        
+        for autor_novo in lista_autores:
+            if autor_novo.lower() in autores_banco:
+                duplicado = True
+                break
+        if duplicado:
+            break
+            
+    if duplicado:
+        print(f"\nErro: A obra '{titulo}' vinculada a este autor já existe no acervo!")
+        cursor.close()
+        return
+        
+    cursor.close()
+
     sinopse = input("Sinopse: ").strip()
     if not sinopse:
         print("Sinopse invalida.")
@@ -36,19 +75,13 @@ def cadastrar_livro(conexao):
         if verificar_data(dt_publicacao):
             break
         
-    print("\nDica: Para mais de um autor/gênero, separe por vírgulas.")
-    autores = input("Nome do(s) Autor(es): ").strip()
-    if not autores: 
-        print("Autor invalido.")
-        return 
-
+    print("\nDica: Para mais de um gênero, separe por vírgulas.")
     generos = input("Gênero(s) Literário(s): ").strip()
     if not generos: 
         print("Gênero invalido.")
         return
 
-    lista_autores = [a.strip() for a in autores.split(',') if a.strip()]
-    lista_generos = [g.strip() for g in generos.split(',') if g.strip()]
+    lista_generos = list(set([g.strip() for g in generos.split(',') if g.strip()]))
 
     cursor = conexao.cursor(dictionary=True)
 

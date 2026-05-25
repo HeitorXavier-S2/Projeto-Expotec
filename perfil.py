@@ -15,9 +15,26 @@ def exibir_perfil(conexao, id_usuario_logado):
             print("Erro: Usuário não encontrado.")
             return
 
+        cursor.execute("""
+            SELECT COUNT(*) AS total_lidos 
+            FROM tbl_leituras 
+            WHERE id_usuario = %s AND concluido_leitura = TRUE
+        """, (id_usuario_logado,))
+        contagem_lidos = cursor.fetchone()
+        total_lidos = contagem_lidos['total_lidos']
+
+        cursor.execute("""
+            SELECT COUNT(*) AS total_resenhas 
+            FROM tbl_avaliacoes 
+            WHERE id_usuario = %s
+        """, (id_usuario_logado,))
+        contagem_resenhas = cursor.fetchone()
+        total_resenhas = contagem_resenhas['total_resenhas']
+
         print(f"\n=================== PERFIL DE {usuario['nome_usuario'].upper()} ===================")
-        print(f"Nascimento: {usuario['nascimento']}")
-        print(f"Bio: {usuario['bio_usuario']}")
+        print(f"  Nascimento: {usuario['nascimento']}")
+        print(f"  Bio: {usuario['bio_usuario']}")
+        print(f"  📊 Estatísticas: 📚 {total_lidos} Livros Lidos  |  ✍️  {total_resenhas} Resenhas Feitas")
         print("-" * 60)
 
         print("MINHA ESTANTE:")
@@ -49,7 +66,7 @@ def exibir_perfil(conexao, id_usuario_logado):
         print("MEUS GRUPOS E COMUNIDADES:")
         cursor.execute("""
             SELECT g.nome_grupo, p.admin, 
-                   GROUP_CONCAT(CONCAT(l.titulo_livro, ' (Até ', DATE_FORMAT(m.dt_meta, '%d/%m/%Y'), ')') SEPARATOR '  |  ') AS leituras_ativas
+            GROUP_CONCAT(CONCAT(l.titulo_livro, ' (Até ', DATE_FORMAT(m.dt_meta, '%d/%m/%Y'), ')') SEPARATOR '  |  ') AS leituras_ativas
             FROM participantes p
             INNER JOIN tbl_grupos g ON p.id_grupo = g.id_grupo
             LEFT JOIN tbl_metas_leitura m ON g.id_grupo = m.id_grupo

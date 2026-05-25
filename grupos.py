@@ -130,6 +130,13 @@ def criar_grupo(conexao, id_usuario_logado):
     if not nome:
         print("O nome não pode estar vazio. Operação cancelada.")
         return
+    
+    cursor = conexao.cursor(dictionary=True)
+    cursor.execute("SELECT id_grupo FROM tbl_grupos WHERE LOWER(nome_grupo) = LOWER(%s)", (nome,))
+    if cursor.fetchone():
+        print(f"\nErro: Já existe uma comunidade chamada '{nome}'. Escolha outro nome!")
+        cursor.close()
+        return
         
     descricao = input("Breve descrição do grupo: ").strip()
     link = input("Link de convite (Discord, WhatsApp, etc.): ").strip()
