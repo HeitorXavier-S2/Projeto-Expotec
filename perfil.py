@@ -178,5 +178,4 @@ def editar_perfil(conexao, id_usuario_logado):
                 cursor.close()
                 
             if escolha in ["1", "2", "3"]:
-                print()
                 input("\nPressione Enter para continuar...")
