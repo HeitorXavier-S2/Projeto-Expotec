@@ -47,7 +47,7 @@ def exibir_perfil(conexao, id_usuario_logado):
         estante = cursor.fetchall()
 
         if not estante:
-            print("Sua estante está vazia. Vá explorar o acervo!")
+            print("  Sua estante está vazia. Vá explorar o acervo!")
         else:
             for livro in estante:
                 if livro['concluido_leitura']:

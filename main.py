@@ -1,6 +1,7 @@
 from banco_de_dados.conexao import conectar, fechar_conexao
 import re
 import mysql.connector
+from datetime import datetime
 
 def cadastrar_usuario(conexao):
     print("\n=================== CADASTRO DE NOVO LEITOR ===================")
@@ -16,9 +17,11 @@ def cadastrar_usuario(conexao):
     
     while True:
         dt_nascimento = input("Data de nascimento (YYYY-MM-DD): ").strip()
-        if len(dt_nascimento) == 10: 
+        try:
+            datetime.strptime(dt_nascimento, "%Y-%m-%d")
             break
-        print("Formato inválido. Use YYYY-MM-DD.")
+        except ValueError:
+            print("Data inválida. Use o formato YYYY-MM-DD (ex: 2026-05-17)")
         
     senha = input("Crie uma senha: ").strip()
     
@@ -145,7 +148,6 @@ def menu_principal():
                 
         elif escolha == "2":
             cadastrar_usuario(conexao)
-            print()
             input("\nPressione Enter para continuar...")
             
         else:

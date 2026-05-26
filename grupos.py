@@ -27,7 +27,7 @@ def listar_grupos_por_livro(conexao, id_usuario_logado, id_livro):
         print(f"      Meta Coletiva: Ler {grupo['paginas_meta']} páginas até {grupo['data_meta']}")
         print("-" * 60)
         
-    escolha = input("\nDigite o ID do grupo para entrar/ver o link (ou 0 para voltar): ").strip()
+    escolha = input("\nDigite o ID do grupo para entrar (ou 0 para voltar): ").strip()
     
     if escolha == "0" or not escolha.isdigit():
         cursor.close()
