@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS tbl_usuario (
 CREATE TABLE IF NOT EXISTS tbl_grupos (
     id_grupo INT AUTO_INCREMENT PRIMARY KEY,
     nome_grupo VARCHAR(200) NOT NULL,
-    descricao_grupo TEXT,
+    descricao_grupo VARCHAR (3000),
     link_externo_grupo VARCHAR(260),
     dt_criacao_grupo DATETIME DEFAULT CURRENT_TIMESTAMP
 );
