@@ -1,3 +1,5 @@
+Para que o projeto funcione é necessário criar um ambiente virtual com o mysql-connector-python.
+
 INSTALANDO A APLICAÇÃO:
 
 Windows:
